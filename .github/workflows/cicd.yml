@@ -1,0 +1,29 @@
+name: C Program CI/CD Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up GCC
+        run: sudo apt-get update && sudo apt-get install -y gcc
+
+      - name: Build C Program
+        run: gcc -o main main.c
+
+      - name: Run Tests
+        run: ./main
+
+      - name: Verify Test Output
+        run: |
+          if grep -q "All tests passed!" <<< "$(./main)"; then
+            echo "Tests passed successfully!"
+          else
+            echo "Tests failed!"
+            exit 1
+          fi
